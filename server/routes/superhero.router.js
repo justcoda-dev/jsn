@@ -1,12 +1,16 @@
-const Router = require("express");
+import {Router} from "express";
+import superheroController from "../controller/hero.controller.js";
+import multer from "multer";
+
 const router = new Router();
-const userController = require("../controller/superHero.controller")
 
-router.post("/", userController.createSuperHero)
-router.get("/", userController.getSuperHeroes)
-router.get("/:id", userController.getOneSuperHero)
-router.patch("/", userController.updateSuperHero)
-router.delete("/:id", userController.deleteSuperHero)
-router.post("/image", userController.uploadSuperHeroImg)
+const upload = multer({dest: "../static/imgs/"})
+router.post("/", superheroController.createSuperHero)
+router.get("/", superheroController.getSuperHeroes)
+router.get("/:id", superheroController.getOneSuperHero)
+router.patch("/", superheroController.updateSuperHero)
+router.delete("/:id", superheroController.deleteSuperHero)
+router.post("/image", superheroController.uploadSuperHeroImg)
+router.delete("/images", superheroController.deleteSuperheroImg)
 
-module.exports = router;
+export default router;

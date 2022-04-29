@@ -1,0 +1,73 @@
+.wrapper {
+    margin-top: 20px;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text {
+    display: flex;
+    font-size: 20px;
+    padding: 10px;
+}
+
+.image {
+
+}
+
+.textInput {
+    font-size: 20px;
+    padding: 10px;
+    font-weight: 700;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    min-width: 400px;
+}
+
+.saveBtn {
+    height: 40px;
+    width: 100px;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.saveBtn:hover {
+    border: 1px solid #18ff00;
+}
+
+.cancelBtn {
+    height: 40px;
+    width: 100px;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cancelBtn:hover {
+    border: 1px solid #ff0000;
+}
+
+.editBtn {
+    height: 40px;
+    width: 100px;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+}
