@@ -2,6 +2,7 @@ import css from "./css.module.css";
 import {useLocation} from "react-router-dom";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import request from "../../api";
+import {HOST_URL} from "../../api";
 
 const SuperheroDetails = () => {
     const [superhero, setSuperhero] = useState({});
@@ -59,7 +60,7 @@ const SuperheroDetails = () => {
                 !show ?
                     <div className={css.details}>
                         <div>
-                            <img src="" alt=""/></div>
+                            <img width="100px" height="100px" src={`${HOST_URL}${superhero.images[0]}`} alt=""/></div>
                         {
                             superheroKeys.map((item, index) =>
                                 <div

@@ -1,20 +1,26 @@
 import express from "express";
-import fileUpload from "express-fileupload";
 import cors from "cors";
 import superheroRouter from "./routes/superhero.router.js"
+import fileUpload from "express-fileupload";
+// import * as path from "path";
+
+// const moduleURL = new URL(import.meta.url);
+// const __dirname = path.dirname(moduleURL.pathname);
 
 
 const PORT = 5000;
 const app = express();
 
-app.use(cors())
 
-app.use(fileUpload({}))
+
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(express.static(dir))
-app.get("/static", (req, res) => {
-    console.log(req)
+app.use(fileUpload({}))
+app.use(express.static("static"))
+
+app.get("/", (req, res) => {
+    res.json({name: "Alex"})
 
 })
 

@@ -1,7 +1,6 @@
 import Superhero from "../db/models/superhero.model.js";
 import {superheroSchema, idSchema, superheroUpdateSchema} from "./validation/superhero.schema.js";
 
-
 const SuperheroController = {
     createSuperHero: async (req, res) => {
         try {
@@ -87,11 +86,10 @@ const SuperheroController = {
                 res.status(401).json({message: "no images"})
             }
             const files = Array.isArray(req.files.files) ? req.files.files : [req.files.files]
-
             if (files.length) {
                 const filePaths = files.map((file) => {
                     file.mv(`static/imgs/${file.name}`)
-                    return `static/imgs/${file.name}`
+                    return `imgs/${file.name}`
                 })
                 res.status(200).json({message: filePaths})
             } else {

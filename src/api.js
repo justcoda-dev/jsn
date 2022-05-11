@@ -1,4 +1,5 @@
-const URL = "http://localhost:5000/api/superhero"
+export const HOST_URL = "http://localhost:5000/";
+const URL = "http://localhost:5000/api/superhero";
 
 const request = async (uri, options) => {
     const response = await fetch(`${URL}/${uri ? uri : ""}`, options)
