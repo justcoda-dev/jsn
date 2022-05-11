@@ -1,5 +1,6 @@
 .inputWrapper {
-    min-height: 60px;
+    min-height: 65px;
+    width: 100%;
 }
 
 .input {
@@ -15,4 +16,5 @@
 
 .error {
     color: #ff0000;
+    display: block;
 }

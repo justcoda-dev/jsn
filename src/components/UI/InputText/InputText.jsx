@@ -1,22 +1,22 @@
 import css from "./css.module.css"
 
 const invalidStyle = {
-    borderColor: "red"
+    borderColor: "#ff0000"
 }
-const InputText = ({value, onChange, error, valid, defaultValue, placeholder}) => {
+const InputText = ({value, onChange, error, defaultValue, placeholder}) => {
 
     return (
         <div className={css.inputWrapper}>
             <input
                 type="text"
                 className={css.input}
-                style={valid ? null : invalidStyle}
+                style={!error ? null : invalidStyle}
                 value={value}
                 defaultValue={defaultValue}
                 onChange={onChange}
                 placeholder={placeholder}
             />
-            {valid ? null : <span className={css.error}>{error}</span>}
+            {!error ? null : <span className={css.error}>{error}</span>}
         </div>
     )
 }
