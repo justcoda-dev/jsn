@@ -1,7 +1,7 @@
 import useInputText from "../UI/InputText/useInputText";
 import css from "./style.module.css";
 import request from "../../api";
-import {useCallback, useEffect} from "react";
+import {useCallback, useEffect, useMemo} from "react";
 import InputText from "../UI/InputText/InputText";
 import InputImage from "../UI/InputImg/InputImage";
 import useInputImage from "../UI/InputImg/useInputImage";
@@ -17,7 +17,7 @@ const SuperheroCreate = () => {
     const [originDescription, handleOriginDescription, clearOriginDescription, originDescriptionError] = useInputText("", true, textInputValidate)
     const [superpowers, handleSuperpowers, clearSuperpowers, superpowersError] = useInputText("", true, textInputValidate)
     const [catchPhrase, handleCatchPhrase, clearCatchPhrase, catchPhraseError] = useInputText("", true, textInputValidate)
-    const [images, handleImages, clearImages] = useInputImage()
+    const [images, handleImages, clearImages, imgValue] = useInputImage()
     const [disabled, setDisabled] = useButtonSubmit()
 
     const clearInputs = () => {
@@ -29,11 +29,11 @@ const SuperheroCreate = () => {
         clearImages()
     }
 
-    const inputsStatus = () => {
-        return !![nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError].filter(item => item !== null).length
-    }
+    const inputsStatus = useMemo(() => {
+        return !![nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError].filter(item => item === "").length
+    }, [nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError])
 
-    const createHandler = useCallback(async () => {
+    const createHandle = useCallback(async () => {
 
         const {message} = await request.upload.uploadSuperHeroImg(images);
 
@@ -43,18 +43,19 @@ const SuperheroCreate = () => {
             origin_description: originDescription,
             superpowers: superpowers,
             catch_phrase: catchPhrase,
-            images: message
+            images: Array.isArray(message) ? message : []
         });
 
         clearInputs()
 
     }, [images, nickname, realName, originDescription, superpowers, catchPhrase])
 
+
     useEffect(() => {
-
         setDisabled(inputsStatus)
+        console.log(inputsStatus)
+    }, [inputsStatus])
 
-    }, [nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError])
 
     return (
         <>
@@ -84,17 +85,19 @@ const SuperheroCreate = () => {
                     placeholder="super powers"
                 />
                 <InputText
-                    error={catchPhraseError} value={catchPhrase} onChange={handleCatchPhrase}
+                    error={catchPhraseError}
+                    value={catchPhrase}
+                    onChange={handleCatchPhrase}
                     placeholder="catch phrase"
                 />
                 <InputImage
-                    value={images}
+                    value={imgValue}
                     onChange={handleImages}
                 />
             </div>
             <ButtonSubmit
                 disabled={disabled}
-                onClick={createHandler}
+                onClick={createHandle}
             >
                 Create
             </ButtonSubmit>

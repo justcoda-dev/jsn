@@ -1,0 +1,11 @@
+.delete {
+    border: none;
+    border-radius: 3px;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    margin-left: 5px;
+}
+
+.delete:hover {
+    cursor: pointer;
+}

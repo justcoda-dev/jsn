@@ -1,20 +1,32 @@
 import css from "./css.module.css"
 import {Link, useLocation} from "react-router-dom";
+import {HOST_URL} from "../../api";
+import ButtonDelete from "../UI/ButtonDelete/ButtonDelete";
+import UserIcon from "../UI/UserIcon/UserIcon";
+import {firstLetterUp} from "../../functions/stringFunctions";
 
 const SuperheroItem = ({superhero, deleteHandler}) => {
-    const superheroIsCome = Object.keys(superhero).length
+
     const location = useLocation()
 
+    const imageSrc = superhero["images"].length ? `${HOST_URL}${superhero["images"][0]}` : null;
+
     return (
-        <>
-            {superheroIsCome ? <div className={css.item}>
-                {/*<div><img src={`http://localhost:5000/${superhero["images"][0]}`} alt=""/></div>*/}
-                <Link className={css.link} to={`${location.pathname}/${superhero.id}`}
-                      state={{id: superhero.id}}> {superhero["nickname"]}
-                </Link>
-                <button className={css.delete} onClick={deleteHandler(superhero.id)}>x</button>
-            </div> : "Loading"}
-        </>
+
+        <li className={css.item}>
+            <UserIcon src={imageSrc}/>
+            <Link
+                className={css.link}
+                to={`${location.pathname}/${superhero.id}`}
+                state={{id: superhero.id}}
+            >
+                {firstLetterUp(superhero["nickname"])}
+            </Link>
+
+            <ButtonDelete onClick={deleteHandler(superhero.id)}/>
+        </li>
+
+
     )
 }
 export default SuperheroItem;
