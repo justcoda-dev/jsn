@@ -6,7 +6,7 @@
 
 > #### `$ git clone https://github.com/justcoda-dev/jsn`
 
-````` $ npm install`````
+``` $ npm install```
 ***
 
 ### App functions :
@@ -18,7 +18,7 @@
 
 > directory: ```jsn/server```
 
-#### command:```$ npm start```
+```$ npm start```
 
 > server will start on <http://localhost:5000/>
 ***
@@ -28,6 +28,6 @@
 > directory: ```jsn```
 ***
 
-#### command: ```$ npm start```
+ ```$ npm start```
 
 > server will start on <http://localhost:3000/>
