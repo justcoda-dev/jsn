@@ -160,6 +160,40 @@ const SuperheroController = {
         } catch (e) {
             console.log("IMG DELETE ALL ERROR")
         }
+    },
+    getSuperheroesList: async (req, res) => {
+        console.log('WORKS')
+        try {
+            const pageAsNumber = +req.query.page
+            const sizeAsNumber = +req.query.size
+            let PAGE = 0
+            let SIZE = 10
+
+            if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+                PAGE = pageAsNumber
+            }
+            if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+                SIZE = sizeAsNumber
+            }
+
+            console.log("SIZE", SIZE)
+            console.log("PAGE", PAGE)
+            const superhero = await Superhero.findAndCountAll({
+                limit: SIZE,
+                offset: PAGE * SIZE
+
+            })
+            console.log(superhero)
+            res.status(200).json({
+                content: superhero.rows,
+                totalPages: Math.ceil(superhero.count / SIZE)
+
+            })
+        } catch (e) {
+
+            res.status(400).json(e)
+            console.log(e)
+        }
     }
 }
 console.log()

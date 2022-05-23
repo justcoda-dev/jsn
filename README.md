@@ -11,7 +11,7 @@
 
 ### App functions :
 
-> ```Create, Edit, Save, Read```
+ ```Create, Edit, Save, Read```
 ***
 
 ### Start server:
@@ -26,8 +26,8 @@
 ### Start React project:
 
 > directory: ```jsn```
-***
 
- ```$ npm start```
+
+```$ npm start```
 
 > server will start on <http://localhost:3000/>

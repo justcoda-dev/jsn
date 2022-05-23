@@ -13,6 +13,9 @@ request.get = {
     oneSuperHero: async (id) => {
         return await request(id)
     },
+    getSuperheroesList: async (page, size) => {
+        return await request(`list?page=${page}&size=${size}`)
+    }
 }
 
 request.post = {
@@ -47,7 +50,7 @@ request.delete = {
             "method": "DELETE"
         })
     },
-    deleteAllImages: async ( id) => {
+    deleteAllImages: async (id) => {
         return await request(`images/${id}`, {
             "method": "DELETE"
         })

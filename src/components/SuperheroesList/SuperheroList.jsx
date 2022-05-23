@@ -8,7 +8,9 @@ const SuperheroList = () => {
 
     const getHeroes = async () => {
         const response = await request.get.superHeroes()
-        setHeroes(response)
+        const superheroes = await request.get.getSuperheroesList(2, 5)
+        console.log(response)
+        setHeroes(superheroes.content)
     }
 
     const deleteHandle = (id) => async () => {

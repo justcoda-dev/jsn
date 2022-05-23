@@ -7,6 +7,7 @@ const router = new Router();
 const upload = multer({dest: "../static/imgs/"})
 router.post("/", superheroController.createSuperHero)
 router.get("/", superheroController.getSuperHeroes)
+router.get("/list", superheroController.getSuperheroesList)
 router.get("/:id", superheroController.getOneSuperHero)
 router.patch("/", superheroController.updateSuperHero)
 router.delete("/:id", superheroController.deleteSuperHero)
