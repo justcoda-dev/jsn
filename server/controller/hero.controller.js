@@ -1,5 +1,7 @@
 import Superhero from "../db/models/superhero.model.js";
 import {superheroSchema, idSchema, superheroUpdateSchema} from "./validation/superhero.schema.js";
+import path from "path";
+import fs from "fs";
 
 const SuperheroController = {
     createSuperHero: async (req, res) => {
@@ -42,7 +44,7 @@ const SuperheroController = {
         try {
 
             const {error, value} = superheroUpdateSchema.validate(req.body)
-
+            console.log(value)
             if (!error) {
                 const superhero = await Superhero.update(
                     value,
@@ -73,7 +75,7 @@ const SuperheroController = {
                 })
                 res.status(202).json({message: `superhero with id:${value} has been deleted`})
             } else {
-                res.status(400).json({message: e})
+                res.status(400).json({message: error})
             }
 
         } catch (e) {
@@ -81,16 +83,28 @@ const SuperheroController = {
         }
     },
     uploadSuperHeroImg: async (req, res) => {
+        const mkdirSync = (dirPath) => {
+            try {
+                fs.mkdirSync(dirPath)
+            } catch (err) {
+                if (err.code !== 'EEXIST') throw err
+            }
+        }
+
         try {
+            const id = req.params.id;
             if (!req.files) {
                 res.status(401).json({message: "no images"})
             }
+
             const files = Array.isArray(req.files.files) ? req.files.files : [req.files.files]
             if (files.length) {
+                mkdirSync(path.resolve("static", "imgs", id))
                 const filePaths = files.map((file) => {
-                    file.mv(`static/imgs/${file.name}`)
-                    return `imgs/${file.name}`
+                    file.mv(`static/imgs/${id}/${file.name}`)
+                    return `imgs/${id}/${file.name}`
                 })
+
                 res.status(200).json({message: filePaths})
             } else {
                 res.status(401).json({message: "no images"})
@@ -100,14 +114,53 @@ const SuperheroController = {
         }
     },
     deleteSuperheroImg: async (req, res) => {
-        console.log('WORK DELETEING')
         try {
-            const arrPaths = req.body
-            console.log(arrPaths)
-            res.status(200).json({message:"has been deleted"})
+            const id = req.params.id
+            const pathsToDelete = req.params.paths.split(",")
+            console.log(req.params.paths)
+            if (pathsToDelete.length) {
+                pathsToDelete.forEach((file) => {
+                    fs.unlink(path.resolve("static", "imgs", id, file), function (err) {
+                        if (err) throw err;
+
+                    });
+                })
+            }
+
+            fs.readdir(path.resolve("static", "imgs", id), (err, files) => {
+                if (err) throw err;
+                if (!files.length) {
+                    fs.rmdir(path.resolve("static", "imgs", id), err => {
+                        if (err) throw err;
+                    });
+                }
+            })
+
+            res.status(200).json({message: "images has been deleted"})
         } catch (e) {
             console.error("img delete error")
         }
+    },
+    deleteAllSuperheroImg: async (req, res) => {
+
+        try {
+            const id = req.params.id
+            fs.readdir(path.resolve("static", "imgs", id), (err, files) => {
+                if (err) throw err
+                files.forEach(file => {
+                    fs.unlink(path.resolve("static", "imgs", id, file), err1 => {
+                        if (err1) throw err1
+                    })
+                })
+                fs.rmdir(path.resolve("static", "imgs", id), err2 => {
+                    if (err2) throw  err2
+                    res.status(200).json({message: `directory ${id} was deleted `})
+                })
+            })
+        } catch (e) {
+            console.log("IMG DELETE ALL ERROR")
+        }
     }
 }
+console.log()
 export default SuperheroController;

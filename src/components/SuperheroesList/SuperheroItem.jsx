@@ -9,12 +9,12 @@ const SuperheroItem = ({superhero, deleteHandler}) => {
 
     const location = useLocation()
 
-    const imageSrc = superhero["images"].length ? `${HOST_URL}${superhero["images"][0]}` : null;
+    const imageSrc = superhero["images"].length ? `${HOST_URL}imgs/${superhero.id}/${superhero["images"][0]}` : null;
 
     return (
 
         <li className={css.item}>
-            <UserIcon src={imageSrc}/>
+            <div className={css.iconWrapper}><UserIcon src={imageSrc}/></div>
             <Link
                 className={css.link}
                 to={`${location.pathname}/${superhero.id}`}

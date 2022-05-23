@@ -1,0 +1,18 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.imageItem {
+    margin: 0px 5px;
+    border: 1px solid #333333;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100px;
+    height: 100px;
+}
+
+.imageItemWrapper {
+
+}

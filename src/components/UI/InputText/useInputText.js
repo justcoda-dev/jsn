@@ -22,6 +22,6 @@ const useInputText = (initialStateText, initialStateValid, validation) => {
     //         console.log(value)
     //     }
     // }, [value])
-    return [value, handleChange, clearInput, textError, setValue];
+    return {value, handleChange, clearInput, textError, setValue};
 }
 export default useInputText

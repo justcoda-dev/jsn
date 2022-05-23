@@ -13,6 +13,7 @@ const SuperheroList = () => {
 
     const deleteHandle = (id) => async () => {
         await request.delete.deleteSuperHero(id)
+        await request.delete.deleteAllImages(id)
         const stayedHeroes = heroes.filter(hero => hero.id !== id)
         setHeroes([...stayedHeroes])
     }

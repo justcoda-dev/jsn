@@ -12,13 +12,40 @@ import {textInputValidate} from "./validation";
 
 const SuperheroCreate = () => {
 
-    const [nickname, handleNickname, clearNickname, nicknameError] = useInputText("", true, textInputValidate)
-    const [realName, handleRealName, clearRealName, realNameError] = useInputText("", true, textInputValidate)
-    const [originDescription, handleOriginDescription, clearOriginDescription, originDescriptionError] = useInputText("", true, textInputValidate)
-    const [superpowers, handleSuperpowers, clearSuperpowers, superpowersError] = useInputText("", true, textInputValidate)
-    const [catchPhrase, handleCatchPhrase, clearCatchPhrase, catchPhraseError] = useInputText("", true, textInputValidate)
-    const [images, handleImages, clearImages, imgValue] = useInputImage()
-    const [disabled, setDisabled] = useButtonSubmit()
+    const {
+        value: nickname,
+        handleChange: handleNickname,
+        clearInput: clearNickname,
+        textError: nicknameError
+    } = useInputText("", true, textInputValidate)
+    const {
+        value: realName,
+        handleChange: handleRealName,
+        clearInput: clearRealName,
+        textError: realNameError
+    } = useInputText("", true, textInputValidate)
+    const {
+        value: originDescription,
+        handleChange: handleOriginDescription,
+        clearInput: clearOriginDescription,
+        textError: originDescriptionError
+    } = useInputText("", true, textInputValidate)
+    const {
+        value: superpowers,
+        handleChange: handleSuperpowers,
+        clearInput: clearSuperpowers,
+        textError: superpowersError
+    } = useInputText("", true, textInputValidate)
+    const {
+        value: catchPhrase,
+        handleChange: handleCatchPhrase,
+        clearInput: clearCatchPhrase,
+        textError: catchPhraseError
+    } = useInputText("", true, textInputValidate)
+
+    const {images, handleChange, clearImages, imagesValue, imagesArr} = useInputImage()
+
+    const {disabled, setDisabled} = useButtonSubmit()
 
     const clearInputs = () => {
         clearNickname()
@@ -35,17 +62,16 @@ const SuperheroCreate = () => {
 
     const createHandle = useCallback(async () => {
 
-        const {message} = await request.upload.uploadSuperHeroImg(images);
-
-        await request.post.createSuperHero({
+        const {id} = await request.post.createSuperHero({
             nickname: nickname,
             real_name: realName,
             origin_description: originDescription,
             superpowers: superpowers,
             catch_phrase: catchPhrase,
-            images: Array.isArray(message) ? message : []
+            images: imagesArr
         });
 
+    await request.upload.uploadSuperHeroImg(images, id);
         clearInputs()
 
     }, [images, nickname, realName, originDescription, superpowers, catchPhrase])
@@ -53,7 +79,6 @@ const SuperheroCreate = () => {
 
     useEffect(() => {
         setDisabled(inputsStatus)
-        console.log(inputsStatus)
     }, [inputsStatus])
 
 
@@ -91,8 +116,8 @@ const SuperheroCreate = () => {
                     placeholder="catch phrase"
                 />
                 <InputImage
-                    value={imgValue}
-                    onChange={handleImages}
+                    value={imagesValue}
+                    onChange={handleChange}
                 />
             </div>
             <ButtonSubmit

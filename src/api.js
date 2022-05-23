@@ -26,9 +26,8 @@ request.post = {
     },
 }
 
-request.path = {
+request.patch = {
     updateSuperHero: async (data) => {
-        console.log(data)
         return await request("", {
             "method": "PATCH",
             "headers": {"Content-Type": "application/json"},
@@ -43,18 +42,21 @@ request.delete = {
             "method": "DELETE",
         })
     },
-    deleteImages: async (pathsArr) => {
-        console.log(pathsArr)
-        return await request("images", {
-            "method": "DELETE",
-            body: JSON.stringify(pathsArr)
+    deleteImages: async (paths, id) => {
+        return await request(`images/${id}/${paths}`, {
+            "method": "DELETE"
+        })
+    },
+    deleteAllImages: async ( id) => {
+        return await request(`images/${id}`, {
+            "method": "DELETE"
         })
     }
 }
 
 request.upload = {
-    uploadSuperHeroImg: async (data) => {
-        return await request("image", {
+    uploadSuperHeroImg: async (data, id) => {
+        return await request(`image/${id}`, {
             "method": "POST",
             "body": data
         })

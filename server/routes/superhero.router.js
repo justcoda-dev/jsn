@@ -10,7 +10,8 @@ router.get("/", superheroController.getSuperHeroes)
 router.get("/:id", superheroController.getOneSuperHero)
 router.patch("/", superheroController.updateSuperHero)
 router.delete("/:id", superheroController.deleteSuperHero)
-router.post("/image", superheroController.uploadSuperHeroImg)
-router.delete("/images", superheroController.deleteSuperheroImg)
+router.post("/image/:id", superheroController.uploadSuperHeroImg)
+router.delete("/images/:id/:paths", superheroController.deleteSuperheroImg)
+router.delete("/images/:id", superheroController.deleteAllSuperheroImg)
 
 export default router;

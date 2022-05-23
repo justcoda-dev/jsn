@@ -1,112 +1,185 @@
 import css from "./css.module.css";
 import {useLocation} from "react-router-dom";
-import {useCallback, useEffect, useMemo, useState, useRef} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import request from "../../api";
 import {HOST_URL} from "../../api";
 import DescriptionField from "../UI/DescriptionField/DescriptionField";
 import InputText from "../UI/InputText/InputText";
-import InputImage from "../UI/InputImg/InputImage";
 import ButtonSubmit from "../UI/ButtonSubmit/ButtonSubmit";
 import useInputText from "../UI/InputText/useInputText";
 import {textInputValidate} from "../SuperheroCreate/validation";
 import useInputImage from "../UI/InputImg/useInputImage";
 import useButtonSubmit from "../UI/ButtonSubmit/useButtonSubmit";
+import ImagesList from "../ImagesList/ImagesList";
+import UserIcon from "../UI/UserIcon/UserIcon";
+import InputImage from "../UI/InputImg/InputImage";
+
 
 const SuperheroDetails = () => {
+    const [superhero, setSuperhero] = useState({})
 
-    const [nickname, handleNickname, , nicknameError, setNickname] = useInputText("", true, textInputValidate)
-    const [realName, handleRealName, , realNameError, setRealName] = useInputText("", true, textInputValidate)
-    const [originDescription, handleOriginDescription, , originDescriptionError, setOriginDescription] = useInputText("", true, textInputValidate)
-    const [superpowers, handleSuperpowers, , superpowersError, setSuperpowers] = useInputText("", true, textInputValidate)
-    const [catchPhrase, handleCatchPhrase, , catchPhraseError, setCatchPhrase] = useInputText("", true, textInputValidate)
-    const [images, handleImages, clearImages, imgValue] = useInputImage()
+    const {
+        value: nickname,
+        handleChange: handleNickname,
+        textError: nicknameError,
+        setValue: setNickname
+    } = useInputText("", true, textInputValidate)
 
-    const prevNickname = useRef(nickname);
-    const prevRealName = useRef(realName);
-    const prevOriginDescription = useRef(originDescription);
-    const prevSuperpowers = useRef(superpowers);
-    const prevCatchPhrase = useRef(catchPhrase);
+    const {
+        value: realName,
+        handleChange: handleRealName,
+        textError: realNameError,
+        setValue: setRealName
+    } = useInputText("", true, textInputValidate)
+
+    const {
+        value: originDescription,
+        handleChange: handleOriginDescription,
+        textError: originDescriptionError,
+        setValue: setOriginDescription
+    } = useInputText("", true, textInputValidate)
+
+    const {
+        value: superpowers,
+        handleChange: handleSuperpowers,
+        textError: superpowersError,
+        setValue: setSuperpowers
+    } = useInputText("", true, textInputValidate)
+
+    const {
+        value: catchPhrase,
+        handleChange: handleCatchPhrase,
+        textError: catchPhraseError,
+        setValue: setCatchPhrase
+    } = useInputText("", true, textInputValidate)
+
+    const [imagesArrState, setImagesArrState] = useState([])
+    const [imagesToDelete, setImagesToDelete] = useState([])
+
+    const {images, handleChange, clearImages, imagesValue, imagesArr} = useInputImage()
+
+    const {disabled, setDisabled} = useButtonSubmit()
 
     const [isLoaded, setIsLoaded] = useState(false)
-    const [disabled, setDisabled] = useButtonSubmit()
     const [editMode, setEditMode] = useState(false)
+
     const {state: {id}} = useLocation()
 
     const inputsStatus = useMemo(() => {
-        return !![nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError].filter(item => item === "").length
+        return [nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError].find(item => item)
     }, [nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError])
 
 
     const stateIsChanged = useMemo(() => {
-        return [nickname, realName, originDescription, superpowers, catchPhrase].join("")
-            === [prevNickname, prevRealName, prevOriginDescription, prevSuperpowers, prevCatchPhrase].join("")
-    }, [nickname, realName, originDescription, superpowers, catchPhrase])
+        return Object.values(superhero).join("") === Object.values({
+            nickname,
+            real_name: realName,
+            origin_description: originDescription,
+            superpowers,
+            catch_phrase: catchPhrase,
+            images: imagesArrState,
+            imagesArr: imagesArr.length ? imagesArr : null
+        }).join("")
+    }, [nickname, realName, originDescription, superpowers, catchPhrase, superhero, imagesArrState, imagesArr])
 
     const getSuperheroDetails = async (id) => {
-        const response = await request.get.oneSuperHero(id)
-        if (Object.keys(response).length) {
-            setIsLoaded(true)
+        const {
+            nickname,
+            real_name,
+            origin_description,
+            superpowers,
+            catch_phrase,
+            images
+        } = await request.get.oneSuperHero(id)
 
-            setNickname(response.nickname)
-            setRealName(response.real_name)
-            setOriginDescription(response.origin_description)
-            setSuperpowers(response.superpowers)
-            setCatchPhrase(response.catch_phrase)
-        }
+        setIsLoaded(true)
+        setSuperhero({nickname, real_name, origin_description, superpowers, catch_phrase, images})
 
+        setNickname(nickname)
+        setRealName(real_name)
+        setOriginDescription(origin_description)
+        setSuperpowers(superpowers)
+        setCatchPhrase(catch_phrase)
+        setImagesArrState([...images])
     }
 
     const editHandle = () => {
         setEditMode(true)
+        setDisabled(true)
     }
 
-    const saveHandle = () => {
+    const saveHandle = useCallback(async () => {
         setEditMode(false)
-        // console.log({nickname, realName, originDescription, superpowers, catchPhrase})
-    }
+        console.log(nickname)
+        console.log(!stateIsChanged)
+        if (!stateIsChanged) {
+            console.log(nickname)
+            await request.patch.updateSuperHero({
+                nickname: nickname,
+                real_name: realName,
+                origin_description: originDescription,
+                superpowers: superpowers,
+                catch_phrase: catchPhrase,
+                images: [...imagesArrState, ...imagesArr],
+                id
+            })
+        }
+
+        if (images) {
+            await request.upload.uploadSuperHeroImg(images, id);
+        }
+        if (imagesToDelete.length) {
+            await request.delete.deleteImages(imagesToDelete, id)
+            setImagesToDelete([])
+        }
+        await getSuperheroDetails(id)
+        clearImages()
+
+    }, [stateIsChanged, nickname, realName, originDescription, superpowers, catchPhrase, images, setImagesToDelete, imagesArr])
+
+    const addImagesHandle = useCallback((input) => {
+        handleChange(input)
+    }, [imagesArr])
+
+    const deleteImageHandle = useCallback((index) => () => {
+
+        setImagesToDelete([...imagesToDelete, ...imagesArrState.splice(index, 1)])
+        setImagesArrState([...imagesArrState])
+
+    }, [imagesToDelete, imagesArrState])
 
     const cancelHandle = () => {
         setEditMode(false)
+        setImagesArrState([...superhero.images])
+        setNickname(superhero.nickname)
+        setRealName(superhero.real_name)
+        setOriginDescription(superhero.origin_description)
+        setSuperpowers(superhero.superpowers)
+        setCatchPhrase(superhero.catch_phrase)
     }
 
-    // CREATED ***************************
+    // CREATED *******************************
+
     useEffect(() => {
         getSuperheroDetails(id)
-
     }, [id])
 
     useEffect(() => {
+        setDisabled(stateIsChanged)
         setDisabled(inputsStatus)
-        console.log(stateIsChanged)
-        // setDisabled(inputsStatus)
+    }, [stateIsChanged, inputsStatus])
 
-    }, [inputsStatus])
 
-    useEffect(() => {
-        prevNickname.current = nickname;
-        prevRealName.current = realName;
-        prevOriginDescription.current = originDescription;
-        prevSuperpowers.current = superpowers;
-        prevCatchPhrase.current = catchPhrase;
-        console.log("works")
-    }, [nickname, realName, originDescription, superpowers, catchPhrase])
-
-    // ****************************************
-
-    // const updateSuperheroDetails = async (data) => {
-    // await request.path.updateSuperHero(data)
-    // await getSuperheroDetails(id)
-    //     if (pathsToDelete.length) {
-    //         await request.delete.deleteImages(pathsToDelete)
-    //     }
-    // }
+    // ***************************************
 
 
     return (
         <>
             {isLoaded
                 ? <div className={css.listWrapper}>
-                    <div>NOW:{nickname}, PREV: {prevNickname.current}</div>
+                    <div className={css.iconWrapper}>
+                        <UserIcon src={`${HOST_URL}imgs/${id}/${imagesArrState[0]}`}/>
+                    </div>
                     <ul className={css.list}>
                         <li className={css.item}>{
                             editMode ? <InputText
@@ -148,8 +221,20 @@ const SuperheroDetails = () => {
                             placeholder="catch phrase"
                         /> : <DescriptionField name="catch phrase" text={catchPhrase}/>
                         }</li>
-
-                        <li className={css.item}>{editMode ? <InputImage/> : <DescriptionField/>}</li>
+                        <li className={css.item}>
+                            <ImagesList
+                                id={id}
+                                deleteHandle={deleteImageHandle}
+                                editMode={editMode}
+                                imagesList={imagesArrState}/>
+                            {
+                                editMode
+                                    ? <InputImage
+                                        defaultValue={imagesValue}
+                                        onChange={addImagesHandle}/>
+                                    : ""
+                            }
+                        </li>
                     </ul>
                     <>
                         {
