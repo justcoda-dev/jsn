@@ -1,5 +1,5 @@
 import db from "../dataBase.js"
-import {DataTypes} from "sequelize";
+import {DataTypes} from "sequelize"
 
 
 const Superhero = db.define('superhero', {
@@ -29,4 +29,4 @@ const Superhero = db.define('superhero', {
     }
 
 }, {});
-export default Superhero;
+export default Superhero

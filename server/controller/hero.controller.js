@@ -1,7 +1,7 @@
-import Superhero from "../db/models/superhero.model.js";
-import {superheroSchema, idSchema, superheroUpdateSchema} from "./validation/superhero.schema.js";
-import path from "path";
-import fs from "fs";
+import Superhero from "../db/models/superhero.model.js"
+import {superheroSchema, idSchema, superheroUpdateSchema} from "./validation/superhero.schema.js"
+import path from "path"
+import fs from "fs"
 
 const SuperheroController = {
     createSuperHero: async (req, res) => {
@@ -10,11 +10,12 @@ const SuperheroController = {
             const {error, value} = superheroSchema.validate(req.body)
             if (!error) {
                 const superhero = await Superhero.create(value)
-                res.status(200).json(superhero)
+                res.status(201).json(superhero)
             } else {
-                res.status(403).json(error)
+                res.status(400).json(error)
             }
         } catch (e) {
+            res.status(500).json(e)
             console.error("createSuperHero error", e)
         }
     },
@@ -23,6 +24,7 @@ const SuperheroController = {
             const allUsers = await Superhero.findAll()
             res.status(200).json(allUsers)
         } catch (e) {
+            res.status(404).json(e)
             console.error("getSuperHeroes error", e)
         }
     },
@@ -33,9 +35,10 @@ const SuperheroController = {
                 const superhero = await Superhero.findOne({where: {id: value}})
                 res.status(200).json(superhero)
             } else {
-                res.status(403).json(error)
+                res.status(404).json(error)
             }
         } catch (e) {
+            res.status(500).json(e)
             console.error("getOneSuperHero error", e)
         }
 
@@ -44,7 +47,6 @@ const SuperheroController = {
         try {
 
             const {error, value} = superheroUpdateSchema.validate(req.body)
-            console.log(value)
             if (!error) {
                 const superhero = await Superhero.update(
                     value,
@@ -54,13 +56,14 @@ const SuperheroController = {
                         },
                     }
                 )
-                res.status(200).json(superhero)
+                res.status(201).json(superhero)
 
             } else {
                 res.status(403).json(error)
             }
 
         } catch (e) {
+            res.status(500).json(e)
             console.error("updateSuperHero error", e)
         }
     },
@@ -73,13 +76,14 @@ const SuperheroController = {
                         id: value,
                     },
                 })
-                res.status(202).json({message: `superhero with id:${value} has been deleted`})
+                res.status(200).json({message: `superhero with id:${value} has been deleted`})
             } else {
                 res.status(400).json({message: error})
             }
 
         } catch (e) {
-            console.error("deleteSuperHero", e)
+            res.status(500).json(e)
+            console.error("deleteSuperHero error", e)
         }
     },
     uploadSuperHeroImg: async (req, res) => {
@@ -105,40 +109,44 @@ const SuperheroController = {
                     return `imgs/${id}/${file.name}`
                 })
 
-                res.status(200).json({message: filePaths})
+                res.status(201).json({message: filePaths})
             } else {
                 res.status(401).json({message: "no images"})
             }
         } catch (e) {
-            console.error("upload img error", e)
+            res.status(500).json(e)
+            console.error("uploadSuperHeroImg error", e)
         }
     },
     deleteSuperheroImg: async (req, res) => {
         try {
             const id = req.params.id
             const pathsToDelete = req.params.paths.split(",")
-            console.log(req.params.paths)
-            if (pathsToDelete.length) {
+
+            if (pathsToDelete.length && id) {
+
                 pathsToDelete.forEach((file) => {
                     fs.unlink(path.resolve("static", "imgs", id, file), function (err) {
                         if (err) throw err;
 
                     });
                 })
+                res.status(200).json({message: "images was delete"})
             }
 
             fs.readdir(path.resolve("static", "imgs", id), (err, files) => {
                 if (err) throw err;
+
                 if (!files.length) {
                     fs.rmdir(path.resolve("static", "imgs", id), err => {
                         if (err) throw err;
                     });
+                    res.status(200).json({message: `directory ${id} was deleted`})
                 }
             })
-
-            res.status(200).json({message: "images has been deleted"})
         } catch (e) {
-            console.error("img delete error")
+            res.status(500).json(e)
+            console.error("deleteSuperheroImg error")
         }
     },
     deleteAllSuperheroImg: async (req, res) => {
@@ -146,23 +154,39 @@ const SuperheroController = {
         try {
             const id = req.params.id
             fs.readdir(path.resolve("static", "imgs", id), (err, files) => {
-                if (err) throw err
-                files.forEach(file => {
-                    fs.unlink(path.resolve("static", "imgs", id, file), err1 => {
-                        if (err1) throw err1
+                if (err) {
+                    res.status(200).json({message: "images deleted"})
+                }
+                if (!files) {
+
+                    fs.rmdir(path.resolve("static", "imgs", id), err2 => {
+                        if (err2) throw  err2
                     })
-                })
-                fs.rmdir(path.resolve("static", "imgs", id), err2 => {
-                    if (err2) throw  err2
-                    res.status(200).json({message: `directory ${id} was deleted `})
-                })
+                    res.status(200).json({message: `directory was deleted `})
+                } else {
+                    files.forEach(file => {
+
+                        fs.unlink(path.resolve("static", "imgs", id, file), err1 => {
+                            if (err1) throw err1
+                        })
+                    })
+                    fs.rmdir(path.resolve("static", "imgs", id), err2 => {
+
+                        if (err2) throw  err2
+                    })
+                    res.status(200).json({message: `directory was deleted `})
+                }
+
+
             })
+
         } catch (e) {
-            console.log("IMG DELETE ALL ERROR")
+            res.status(500).json(e)
+            console.error("deleteAllSuperheroImg error")
         }
     },
     getSuperheroesList: async (req, res) => {
-        console.log('WORKS')
+
         try {
             const pageAsNumber = +req.query.page
             const sizeAsNumber = +req.query.size
@@ -176,25 +200,27 @@ const SuperheroController = {
                 SIZE = sizeAsNumber
             }
 
-            console.log("SIZE", SIZE)
-            console.log("PAGE", PAGE)
+
             const superhero = await Superhero.findAndCountAll({
                 limit: SIZE,
                 offset: PAGE * SIZE
 
             })
-            console.log(superhero)
+
             res.status(200).json({
                 content: superhero.rows,
                 totalPages: Math.ceil(superhero.count / SIZE)
 
             })
-        } catch (e) {
+            console.log({
+                content: superhero.rows,
+                totalPages: Math.ceil(superhero.count / SIZE)
 
-            res.status(400).json(e)
-            console.log(e)
+            })
+        } catch (e) {
+            res.status(500).json(e)
+            console.error("getSuperheroesList error", e)
         }
     }
 }
-console.log()
-export default SuperheroController;
+export default SuperheroController

@@ -1,5 +1,5 @@
-export const HOST_URL = "http://localhost:5000/";
-const URL = "http://localhost:5000/api/superhero";
+export const HOST_URL = "http://localhost:5000/"
+const URL = "http://localhost:5000/api/superhero"
 
 const request = async (uri, options) => {
     const response = await fetch(`${URL}/${uri ? uri : ""}`, options)
@@ -7,9 +7,6 @@ const request = async (uri, options) => {
 }
 
 request.get = {
-    superHeroes: async () => {
-        return await request()
-    },
     oneSuperHero: async (id) => {
         return await request(id)
     },
@@ -65,4 +62,4 @@ request.upload = {
         })
     }
 }
-export default request;
+export default request

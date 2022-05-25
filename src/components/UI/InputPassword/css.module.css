@@ -1,0 +1,39 @@
+.inputWrapper {
+    position: relative;
+    min-height: 65px;
+    width: 100%;
+}
+
+.input {
+    height: 40px;
+    width: 100%;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.button {
+    position: absolute;
+    top: 10px;
+    /*left: 0;*/
+    right: 10px;
+    cursor: pointer;
+    transition: none;
+    transform: none;
+    outline: none;
+    border: 1px solid #333333;
+}
+
+.button:hover {
+    outline: none;
+    border: 1px solid #333333;
+}
+
+.error {
+    color: #ff0000;
+    display: block;
+}

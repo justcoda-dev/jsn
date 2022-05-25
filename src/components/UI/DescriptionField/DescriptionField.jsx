@@ -1,11 +1,7 @@
 import css from "./css.module.css"
-import {firstLetterUp} from "../../../functions/stringFunctions";
-import {useMemo} from "react";
+import {firstLetterUp} from "../../../functions/stringFunctions"
 
 const DescriptionField = ({name, text}) => {
-
-    // const nameFirstLetterUp = useMemo(() => firstLetterUp(name), [name])
-    // const textUpper = useMemo(() => firstLetterUp(text), [text])
 
     return (
         <>
@@ -20,4 +16,4 @@ const DescriptionField = ({name, text}) => {
         </>
     )
 }
-export default DescriptionField;
+export default DescriptionField

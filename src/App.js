@@ -1,9 +1,9 @@
-import './App.css';
-import {NavLink, Route, Routes} from "react-router-dom";
-import SuperheroList from "./components/SuperheroesList/SuperheroList";
-import MainPage from "./components/MainPage/MainPage";
-import SuperheroDetails from "./components/SuperheroDetails/SuperheroDetails";
-import SuperheroCreate from "./components/SuperheroCreate/SuperheroCreate";
+import './App.css'
+import {NavLink, Route, Routes} from "react-router-dom"
+import SuperheroList from "./components/SuperheroesList/SuperheroList"
+import MainPage from "./components/MainPage/MainPage"
+import SuperheroDetails from "./components/SuperheroDetails/SuperheroDetails"
+import SuperheroCreate from "./components/SuperheroCreate/SuperheroCreate"
 
 function App() {
     return (

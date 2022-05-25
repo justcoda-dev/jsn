@@ -2,15 +2,17 @@ import css from "./css.module.css";
 import {useEffect, useState} from "react";
 import request from "../../api";
 import SuperheroItem from "./SuperheroItem";
+import Pagination from "../Pagination/Pagination";
 
 const SuperheroList = () => {
     const [heroes, setHeroes] = useState([])
+    const [pages, setPages] = useState(0)
 
     const getHeroes = async () => {
-        const response = await request.get.superHeroes()
-        const superheroes = await request.get.getSuperheroesList(2, 5)
-        console.log(response)
-        setHeroes(superheroes.content)
+        const {totalPages, content} = await request.get.getSuperheroesList(0, 5)
+
+        setPages(totalPages)
+        setHeroes(content)
     }
 
     const deleteHandle = (id) => async () => {
@@ -20,24 +22,34 @@ const SuperheroList = () => {
         setHeroes([...stayedHeroes])
     }
 
+    const onChangePage = (index) => async () => {
+        const superheroes = await request.get.getSuperheroesList(index, 5)
+        setPages(superheroes.totalPages)
+        setHeroes(superheroes.content)
+    }
 
     useEffect(() => {
         getHeroes()
     }, [])
 
     return (
-        <ul className={css.list}>
-            {
-                heroes.length
-                    ? heroes.map((superhero) =>
-                        <SuperheroItem
-                            deleteHandler={deleteHandle}
-                            key={superhero.id}
-                            superhero={superhero}
-                        />)
-                    : "No superheroes"
-            }
-        </ul>
+        <div>{
+            heroes.length
+                ? <div className={css.listWrapper}>
+                    <ul className={css.list}>
+                        {
+                            heroes.map((superhero) =>
+                                <SuperheroItem
+                                    deleteHandler={deleteHandle}
+                                    key={superhero.id}
+                                    superhero={superhero}
+                                />)
+                        }
+                    </ul>
+                    <Pagination onChangePage={onChangePage} pages={pages}/>
+                </div>
+                : "no superheroes"
+        }</div>
 
     )
 }

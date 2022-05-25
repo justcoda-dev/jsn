@@ -1,10 +1,9 @@
-import {useEffect, useState} from "react";
+import {useState} from "react"
 
-const useInputText = (initialStateText, initialStateValid, validation) => {
+const useInputText = ({initialStateText, validation}) => {
 
-    const [value, setValue] = useState(initialStateText || "");
-    const [textError, setTextError] = useState("");
-    // const [valid, setValid] = useState(initialStateValid || true);
+    const [value, setValue] = useState(initialStateText || "")
+    const [textError, setTextError] = useState("")
 
     const handleChange = ({target: {value}}) => {
         setValue(value)
@@ -16,12 +15,7 @@ const useInputText = (initialStateText, initialStateValid, validation) => {
         setValue("")
         setTextError("")
     };
-    // useEffect(() => {
-    //     if (validation) {
-    //         setTextError(validation(value))
-    //         console.log(value)
-    //     }
-    // }, [value])
-    return {value, handleChange, clearInput, textError, setValue};
+
+    return {value, handleChange, clearInput, textError, setValue}
 }
 export default useInputText

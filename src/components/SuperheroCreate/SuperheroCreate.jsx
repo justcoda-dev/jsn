@@ -1,13 +1,13 @@
-import useInputText from "../UI/InputText/useInputText";
-import css from "./style.module.css";
-import request from "../../api";
-import {useCallback, useEffect, useMemo} from "react";
-import InputText from "../UI/InputText/InputText";
-import InputImage from "../UI/InputImg/InputImage";
-import useInputImage from "../UI/InputImg/useInputImage";
-import ButtonSubmit from "../UI/ButtonSubmit/ButtonSubmit";
-import useButtonSubmit from "../UI/ButtonSubmit/useButtonSubmit";
-import {textInputValidate} from "./validation";
+import useInputText from "../UI/InputText/useInputText"
+import css from "./style.module.css"
+import request from "../../api"
+import {useCallback, useEffect, useMemo} from "react"
+import InputText from "../UI/InputText/InputText"
+import InputImage from "../UI/InputImg/InputImage"
+import useInputImage from "../UI/InputImg/useInputImage"
+import ButtonSubmit from "../UI/ButtonSubmit/ButtonSubmit"
+import useButtonSubmit from "../UI/ButtonSubmit/useButtonSubmit"
+import {textInputValidate} from "./validation"
 
 
 const SuperheroCreate = () => {
@@ -17,35 +17,38 @@ const SuperheroCreate = () => {
         handleChange: handleNickname,
         clearInput: clearNickname,
         textError: nicknameError
-    } = useInputText("", true, textInputValidate)
+    } = useInputText({validation: textInputValidate})
     const {
         value: realName,
         handleChange: handleRealName,
         clearInput: clearRealName,
         textError: realNameError
-    } = useInputText("", true, textInputValidate)
+    } = useInputText({validation: textInputValidate})
     const {
         value: originDescription,
         handleChange: handleOriginDescription,
         clearInput: clearOriginDescription,
         textError: originDescriptionError
-    } = useInputText("", true, textInputValidate)
+    } = useInputText({validation: textInputValidate})
     const {
         value: superpowers,
         handleChange: handleSuperpowers,
         clearInput: clearSuperpowers,
         textError: superpowersError
-    } = useInputText("", true, textInputValidate)
+    } = useInputText({validation: textInputValidate})
     const {
         value: catchPhrase,
         handleChange: handleCatchPhrase,
         clearInput: clearCatchPhrase,
         textError: catchPhraseError
-    } = useInputText("", true, textInputValidate)
+    } = useInputText({validation: textInputValidate})
 
     const {images, handleChange, clearImages, imagesValue, imagesArr} = useInputImage()
 
     const {disabled, setDisabled} = useButtonSubmit()
+    const inputsStatus = useMemo(() => {
+        return !![nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError].filter(item => item === "").length
+    }, [nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError])
 
     const clearInputs = () => {
         clearNickname()
@@ -55,10 +58,6 @@ const SuperheroCreate = () => {
         clearCatchPhrase()
         clearImages()
     }
-
-    const inputsStatus = useMemo(() => {
-        return !![nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError].filter(item => item === "").length
-    }, [nicknameError, realNameError, originDescriptionError, superpowersError, catchPhraseError])
 
     const createHandle = useCallback(async () => {
 
@@ -71,7 +70,8 @@ const SuperheroCreate = () => {
             images: imagesArr
         });
 
-    await request.upload.uploadSuperHeroImg(images, id);
+        await request.upload.uploadSuperHeroImg(images, id);
+
         clearInputs()
 
     }, [images, nickname, realName, originDescription, superpowers, catchPhrase])
@@ -115,18 +115,13 @@ const SuperheroCreate = () => {
                     onChange={handleCatchPhrase}
                     placeholder="catch phrase"
                 />
-                <InputImage
-                    value={imagesValue}
-                    onChange={handleChange}
-                />
+
+                <InputImage value={imagesValue} onChange={handleChange}/>
             </div>
-            <ButtonSubmit
-                disabled={disabled}
-                onClick={createHandle}
-            >
+            <ButtonSubmit disabled={disabled} onClick={createHandle}>
                 Create
             </ButtonSubmit>
         </>
     )
 }
-export default SuperheroCreate;
+export default SuperheroCreate

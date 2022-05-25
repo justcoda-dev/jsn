@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from "joi"
 
 export const superheroSchema = Joi.object({
     nickname: Joi.string().min(3).max(100).required(),

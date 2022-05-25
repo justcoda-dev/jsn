@@ -1,5 +1,5 @@
 import css from "./css.module.css"
-import EditImagesItem from "./EditImagesItem";
+import EditImagesItem from "./EditImagesItem"
 
 const EditImagesList = ({arrList}) => {
     return (
@@ -8,4 +8,4 @@ const EditImagesList = ({arrList}) => {
         </ul>
     )
 }
-export default EditImagesList;
+export default EditImagesList

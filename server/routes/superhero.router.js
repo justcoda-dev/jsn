@@ -1,10 +1,9 @@
-import {Router} from "express";
-import superheroController from "../controller/hero.controller.js";
-import multer from "multer";
+import {Router} from "express"
+import superheroController from "../controller/hero.controller.js"
 
-const router = new Router();
 
-const upload = multer({dest: "../static/imgs/"})
+const router = new Router()
+
 router.post("/", superheroController.createSuperHero)
 router.get("/", superheroController.getSuperHeroes)
 router.get("/list", superheroController.getSuperheroesList)
@@ -15,4 +14,4 @@ router.post("/image/:id", superheroController.uploadSuperHeroImg)
 router.delete("/images/:id/:paths", superheroController.deleteSuperheroImg)
 router.delete("/images/:id", superheroController.deleteAllSuperheroImg)
 
-export default router;
+export default router

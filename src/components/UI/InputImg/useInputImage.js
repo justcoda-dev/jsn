@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState} from "react"
 
 const useInputImage = () => {
     const [images, setImages] = useState(null)
@@ -11,7 +11,7 @@ const useInputImage = () => {
         const formData = new FormData()
         for (let i = 0; i < files.length; i++) {
             formData.append("files", files[i])
-            console.log(files[i].name)
+
             arr.push(files[i].name)
         }
 
@@ -25,4 +25,4 @@ const useInputImage = () => {
     }
     return {images, handleChange, clearImages, imagesValue, imagesArr}
 }
-export default useInputImage;
+export default useInputImage

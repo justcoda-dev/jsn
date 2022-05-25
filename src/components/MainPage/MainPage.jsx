@@ -1,17 +1,12 @@
-import InputText from "../UI/InputText/InputText";
-import {useEffect, useState} from "react";
-import useInputText from "../UI/InputText/useInputText";
-import css from "../SuperheroCreate/style.module.css";
+import Authorization from "../Authorization/Authorization"
 
 const MainPage = () => {
-    const handleChange = (e) => {
-        console.log(e.target.files)
-    }
+
     return (
 
         <div>
-            <input id="file-upload" onChange={handleChange} type="file" multiple/>
+            <Authorization/>
         </div>
     )
 }
-export default MainPage;
+export default MainPage

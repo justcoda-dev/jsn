@@ -4,16 +4,20 @@ import ImageItem from "./ImageItem"
 const ImagesList = ({imagesList, editMode, deleteHandle, id}) => {
     return (
         <div className={css.wrapper}>
-            {imagesList.map((src, index) =>
-                <ImageItem
-                    id={id}
-                    deleteHandle={deleteHandle}
-                    editMode={editMode}
-                    key={index}
-                    index={index}
-                    src={src}
-                />)}
+            {
+                imagesList.length
+                    ? imagesList.map((src, index) =>
+                        <ImageItem
+                            id={id}
+                            deleteHandle={deleteHandle}
+                            editMode={editMode}
+                            key={index}
+                            index={index}
+                            src={src}
+                        />)
+                    : "no images"
+            }
         </div>
     )
 }
-export default ImagesList;
+export default ImagesList
